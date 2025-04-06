@@ -2,15 +2,24 @@
 	"name": "cs-weekly-drop-reminder",
 	"version": "0.0.0",
 	"private": true,
+	"type": "module",
 	"scripts": {
 		"deploy": "wrangler deploy",
 		"dev": "wrangler dev",
 		"start": "wrangler dev",
-		"test": "vitest"
+		"test": "vitest",
+		"register": "node src/register.js",
+		"ngrok": "ngrok http 8787"
 	},
 	"devDependencies": {
 		"@cloudflare/vitest-pool-workers": "^0.7.5",
 		"vitest": "~3.0.7",
 		"wrangler": "^4.7.2"
+	},
+	"dependencies": {
+		"discord-interactions": "^4.1.1",
+		"dotenv": "^16.4.7",
+		"itty-router": "^4.2.1",
+		"ngrok": "^5.0.0-beta.2"
 	}
 }
