@@ -32,7 +32,7 @@ router.post('/', async (request, env) => {
 		switch (interaction.data.name.toLowerCase()) {
 			case 'reset': {
 				const now = new Date();
-				now.setHours(now.getHours() + 1); //accounts for daylight saving. remove when est
+				now.setHours(now.getHours() - 1); //accounts for daylight saving. remove when est
 				const currentDay = now.getDay();
 				const daysUntilWednesday = (3 - currentDay + 7) % 7 || 7;
 
