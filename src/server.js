@@ -32,28 +32,26 @@ router.post('/', async (request, env) => {
 		switch (interaction.data.name.toLowerCase()) {
 			case 'reset': {
 				const now = new Date();
-				now.setHours(now.getHours() - 1); //accounts for daylight saving. remove when est
-				const currentDay = now.getDay();
+				const currentDay = now.getUTCDay(); // Get the day in UTC
+
 				const daysUntilWednesday = (3 - currentDay + 7) % 7 || 7;
 
 				const nextWednesday = new Date(now);
-				nextWednesday.setDate(now.getDate() + daysUntilWednesday);
-				nextWednesday.setHours(0, 0, 0, 0);
+				nextWednesday.setUTCDate(now.getUTCDate() + daysUntilWednesday);
+				nextWednesday.setUTCHours(1, 0, 0, 0); // 1 AM UTC on the next Wednesday
 
-				const diffMs = nextWednesday - now;
-				const diffSec = Math.floor(diffMs / 1000);
-				const days = Math.floor(diffSec / 86400);
-				const hours = Math.floor((diffSec % 86400) / 3600);
-				const minutes = Math.floor((diffSec % 3600) / 60);
-				const seconds = diffSec % 60;
+				const unixTimestamp = Math.floor(nextWednesday.getTime() / 1000);
+				const fullTimestamp = `<t:${unixTimestamp}:F>`; // Long date/time format
+				const relativeTimestamp = `<t:${unixTimestamp}:R>`; // Relative time format
 
-				const responseText = `Next Wednesday is on ${nextWednesday.toDateString()}\nTime remaining: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+				const responseText = `Next reset is ${fullTimestamp}, ${relativeTimestamp}`;
 
 				return new JsonResponse({
 					type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
 					data: { content: responseText },
 				});
 			}
+
 			default:
 				return new JsonResponse({ error: 'Unknown command' }, { status: 400 });
 		}
