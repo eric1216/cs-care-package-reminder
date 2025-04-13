@@ -1,4 +1,5 @@
 import { Router } from 'itty-router';
+import { RESET_COMMAND } from './commands';
 import { InteractionResponseType, InteractionType, verifyKey } from 'discord-interactions';
 
 class JsonResponse extends Response {
@@ -30,7 +31,7 @@ router.post('/', async (request, env) => {
 
 	if (interaction.type === InteractionType.APPLICATION_COMMAND) {
 		switch (interaction.data.name.toLowerCase()) {
-			case 'reset': {
+			case RESET_COMMAND.name.toLowerCase(): {
 				const now = new Date();
 				const currentDay = now.getUTCDay(); // Get the day in UTC
 
@@ -76,41 +77,36 @@ async function verifyDiscordRequest(request, env) {
 	};
 }
 
-// Send a message to the Discord channel
-async function sendResetMessage(env) {
-	const channelId = '1208161807684993034'; // Replace with your channel ID
-	const messageContent = 'RESET';
+// Send a message via Discord webhook
+async function sendResetWebhook(env) {
+	const webhookUrl = env.DISCORD_WEBHOOK_URL;
 
 	const payload = {
-		content: messageContent,
+		content: '🔁 Weekly reset time!',
 	};
 
-	const response = await fetch(`https://discord.com/api/v10/channels/${channelId}/messages`, {
+	const response = await fetch(webhookUrl, {
 		method: 'POST',
 		headers: {
-			Authorization: `Bot ${env.DISCORD_BOT_TOKEN}`, // Replace with your bot's token
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify(payload),
 	});
 
 	if (!response.ok) {
-		console.error('Failed to send message:', await response.text());
+		console.error('Failed to send webhook message:', await response.text());
 	} else {
-		console.log('Message sent successfully.');
+		console.log('Reset message sent via webhook.');
 	}
 }
 
-// Cron trigger for every Wednesday at 1 AM GMT
-export const scheduledEvent = {
-	async scheduled(event, env) {
-		// Send the reset message every Wednesday at 1 AM GMT
-		await sendResetMessage(env);
-	},
-};
+// Cron trigger for every Wednesday at 1 AM UTC
+export async function scheduled(event, env, ctx) {
+	await sendResetWebhook(env);
+}
 
 // Ensure the worker fetch method is defined
 export default {
 	fetch: router.fetch,
-	scheduledEvent,
+	scheduled,
 };
