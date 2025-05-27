@@ -8,18 +8,16 @@
 		"dev": "wrangler dev",
 		"start": "wrangler dev",
 		"test": "vitest",
-		"register": "node src/register.js",
-		"ngrok": "ngrok http 8787"
+		"register": "node src/register.js"
 	},
 	"devDependencies": {
-		"@cloudflare/vitest-pool-workers": "^0.7.5",
+		"@cloudflare/vitest-pool-workers": "^0.8.32",
 		"vitest": "~3.0.7",
-		"wrangler": "^4.7.2"
+		"wrangler": "^4.10.0"
 	},
 	"dependencies": {
 		"discord-interactions": "^4.1.1",
 		"dotenv": "^16.4.7",
-		"itty-router": "^4.2.1",
-		"ngrok": "^5.0.0-beta.2"
+		"itty-router": "^4.2.1"
 	}
 }
